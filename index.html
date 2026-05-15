@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expense Tracker</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:#f3f6fb;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:30px 15px;
+      color:#111827;
+    }
+
+    .app{
+      width:100%;
+      max-width:420px;
+    }
+
+    /* Header */
+
+    .header{
+      background:linear-gradient(135deg,#1a73e8,#4285f4);
+      color:white;
+      padding:28px 24px;
+      border-radius:28px;
+      box-shadow:0 10px 30px rgba(26,115,232,0.25);
+      margin-bottom:22px;
+    }
+
+    .header-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:28px;
+    }
+
+    .profile{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .avatar{
+      width:46px;
+      height:46px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.25);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-weight:700;
+      font-size:18px;
+      backdrop-filter:blur(10px);
+    }
+
+    .profile h3{
+      font-size:16px;
+      font-weight:600;
+    }
+
+    .profile p{
+      font-size:12px;
+      opacity:0.85;
+    }
+
+    .balance-label{
+      font-size:14px;
+      opacity:0.9;
+      margin-bottom:8px;
+    }
+
+    .balance{
+      font-size:40px;
+      font-weight:700;
+      letter-spacing:-1px;
+    }
+
+    /* Card */
+
+    .card{
+      background:white;
+      border-radius:24px;
+      padding:22px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.05);
+      margin-bottom:20px;
+    }
+
+    .card-title{
+      font-size:18px;
+      font-weight:600;
+      margin-bottom:18px;
+      color:#111827;
+    }
+
+    /* Form */
+
+    .input-group{
+      margin-bottom:16px;
+    }
+
+    .input-group label{
+      display:block;
+      font-size:13px;
+      color:#6b7280;
+      margin-bottom:8px;
+    }
+
+    input{
+      width:100%;
+      border:none;
+      background:#f3f6fb;
+      padding:15px;
+      border-radius:14px;
+      font-size:15px;
+      outline:none;
+      transition:0.2s;
+    }
+
+    input:focus{
+      background:#eef4ff;
+      border:1px solid #1a73e8;
+    }
+
+    .add-btn{
+      width:100%;
+      border:none;
+      padding:15px;
+      border-radius:16px;
+      background:#1a73e8;
+      color:white;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.25s;
+    }
+
+    .add-btn:hover{
+      background:#1557b0;
+    }
+
+    /* Transactions */
+
+    .transactions{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .transaction{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#f8fafc;
+      padding:14px;
+      border-radius:18px;
+      transition:0.2s;
+    }
+
+    .transaction:hover{
+      transform:translateY(-2px);
+    }
+
+    .left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .icon{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background:#e8f0fe;
+      color:#1a73e8;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:18px;
+      font-weight:700;
+    }
+
+    .details h4{
+      font-size:15px;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+
+    .details p{
+      font-size:12px;
+      color:#6b7280;
+    }
+
+    .amount{
+      text-align:right;
+    }
+
+    .amount h3{
+      color:#ef4444;
+      font-size:16px;
+      margin-bottom:6px;
+    }
+
+    .delete-btn{
+      border:none;
+      background:#fee2e2;
+      color:#dc2626;
+      padding:6px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:600;
+    }
+
+    .empty{
+      text-align:center;
+      color:#9ca3af;
+      padding:20px 0;
+      font-size:14px;
+    }
+
+    @media(max-width:480px){
+      .balance{
+        font-size:34px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- Header -->
+    <div class="header">
+
+      <div class="header-top">
+        <div class="profile">
+          <div class="avatar">A</div>
+
+          <div>
+            <h3>Expense Tracker</h3>
+            <p>Manage your spending smartly</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="balance-label">
+        Total Spending
+      </div>
+
+      <div class="balance" id="total">
+        ₹0
+      </div>
+
+    </div>
+
+    <!-- Add Expense -->
+    <div class="card">
+
+      <div class="card-title">
+        Add Expense
+      </div>
+
+      <form id="expense-form">
+
+        <div class="input-group">
+          <label>Expense Name</label>
+          <input
+            type="text"
+            id="title"
+            placeholder="Food, Shopping, Recharge..."
+            required
+          >
+        </div>
+
+        <div class="input-group">
+          <label>Amount</label>
+          <input
+            type="number"
+            id="amount"
+            placeholder="₹ Enter amount"
+            required
+          >
+        </div>
+
+        <button class="add-btn" type="submit">
+          Add Transaction
+        </button>
+
+      </form>
+
+    </div>
+
+    <!-- Transactions -->
+    <div class="card">
+
+      <div class="card-title">
+        Recent Transactions
+      </div>
+
+      <div class="transactions" id="expense-list"></div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const form = document.getElementById("expense-form");
+    const titleInput = document.getElementById("title");
+    const amountInput = document.getElementById("amount");
+    const expenseList = document.getElementById("expense-list");
+    const totalDisplay = document.getElementById("total");
+
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+    function updateUI(){
+
+      expenseList.innerHTML = "";
+
+      let total = 0;
+
+      if(expenses.length === 0){
+        expenseList.innerHTML = `
+          <div class="empty">
+            No transactions yet
+          </div>
+        `;
+      }
+
+      expenses.forEach((expense,index)=>{
+
+        total += expense.amount;
+
+        const div = document.createElement("div");
+        div.classList.add("transaction");
+
+        div.innerHTML = `
+          <div class="left">
+
+            <div class="icon">
+              ₹
+            </div>
+
+            <div class="details">
+              <h4>${expense.title}</h4>
+              <p>${expense.date}</p>
+            </div>
+
+          </div>
+
+          <div class="amount">
+            <h3>- ₹${expense.amount}</h3>
+
+            <button
+              class="delete-btn"
+              onclick="deleteExpense(${index})"
+            >
+              Delete
+            </button>
+          </div>
+        `;
+
+        expenseList.appendChild(div);
+
+      });
+
+      totalDisplay.textContent = `₹${total}`;
+
+      localStorage.setItem(
+        "expenses",
+        JSON.stringify(expenses)
+      );
+
+    }
+
+    form.addEventListener("submit",(e)=>{
+
+      e.preventDefault();
+
+      const title = titleInput.value.trim();
+      const amount = Number(amountInput.value);
+
+      if(title === "" || amount <= 0){
+        alert("Enter valid details");
+        return;
+      }
+
+      const today = new Date();
+
+      const formattedDate =
+        today.toLocaleDateString("en-IN",{
+          day:"numeric",
+          month:"short",
+          year:"numeric"
+        });
+
+      expenses.unshift({
+        title,
+        amount,
+        date: formattedDate
+      });
+
+      titleInput.value = "";
+      amountInput.value = "";
+
+      updateUI();
+
+    });
+
+    function deleteExpense(index){
+
+      expenses.splice(index,1);
+
+      updateUI();
+
+    }
+
+    updateUI();
+
+  </script>
+
+</body>
+</html>
